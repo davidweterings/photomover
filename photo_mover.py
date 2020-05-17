@@ -7,8 +7,7 @@ from glob import iglob
 from pathlib import Path
 from typing import Optional
 
-logger = logging.getLogger(__name__)
-logger.addHandler(logging.StreamHandler(sys.stdout))
+logging.basicConfig(level=logging.INFO)
 
 
 def dir_path(string):
@@ -31,10 +30,10 @@ def is_valid_directory(directory: str) -> bool:
 
 
 def find_directory(target_directory: str, start_directory: str) -> Optional[str]:
-    logger.info("Looking for target directory: %s", target_directory)
+    logging.info("Looking for target directory: %s", target_directory)
     for root, dirs, files in os.walk(start_directory):
         if target_directory in dirs:
-            logger.info("Found directory %s in %s", target_directory, root)
+            logging.info("Found directory %s in %s", target_directory, root)
             return f"{root}/{target_directory}"
 
     return None
@@ -43,11 +42,11 @@ def find_directory(target_directory: str, start_directory: str) -> Optional[str]
 def move_photos(source_dir: str, search_dir: str):
     dirs_to_copy = [d for d in iglob(f"{source_dir}/*") if os.path.isdir(d)]
 
-    logger.info("Found dirs: %s", dirs_to_copy)
+    logging.info("Found dirs: %s", dirs_to_copy)
 
     for directory in dirs_to_copy:
         if not is_valid_directory(directory):
-            logger.info("Skipping directory %s", directory)
+            logging.info("Skipping directory %s", directory)
             continue
 
         target_directory = find_directory(get_target_directory(directory), search_dir)
