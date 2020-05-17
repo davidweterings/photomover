@@ -4,6 +4,7 @@ import os
 import sys
 import shutil
 from glob import iglob
+from pathlib import Path
 from typing import Optional
 
 logger = logging.getLogger(__name__)
@@ -50,8 +51,11 @@ def move_photos(source_dir: str, search_dir: str):
             continue
 
         target_directory = find_directory(get_target_directory(directory), search_dir)
+
         if target_directory:
-            shutil.move(directory, os.path.join(target_directory, "Warehouse", os.path.basename(directory)))
+            full_target_path = os.path.join(target_directory, "Warehouse", os.path.basename(directory))
+            Path(full_target_path).mkdir(parents=True, exist_ok=True)
+            shutil.move(directory, full_target_path)
 
 
 if __name__ == "__main__":
